@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --no-cache bash curl php7 php7-curl php7-fpm php7-cli unzip
+RUN apk add --no-cache bash curl php7 php7-curl php7-fpm php7-cli php7-json unzip
 
 RUN cd /home && mkdir oneindex
 
