@@ -24,6 +24,7 @@ RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
 
 RUN chmod -R 777 /home/oneindex
 RUN chmod -R 777 /etc/php7
+RUN chmod -R 777 /var/log
 
 EXPOSE 8080
 
