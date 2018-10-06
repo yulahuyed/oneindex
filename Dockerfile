@@ -21,8 +21,6 @@ COPY ./Caddyfile /home/oneindex/Caddyfile
 COPY ./run.sh /home/oneindex/run.sh
 
 RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
-RUN sed -i "s#:oneindex)#:yhiblog)#g" /home/oneindex/view/admin/install/install_3.php
-RUN sed -i "s#'password' => 'oneindex'#'password' => 'yhiblog'#g" /home/oneindex/controller/AdminController.php
 
 RUN chmod -R 777 /home/oneindex
 RUN chmod -R 777 /etc/php7
