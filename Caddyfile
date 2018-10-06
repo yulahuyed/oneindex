@@ -1,0 +1,14 @@
+:8080 {
+     root /home/oneindex
+     log /home/oneindex/info.log
+     errors /home/oneindex/errors.log
+     tls off
+     gzip
+ 
+     # PHP-FPM Configuration for Caddy
+     fastcgi / 127.0.0.1:9000 php {
+         ext .php
+         split .php
+         index index.php
+     }
+ }
