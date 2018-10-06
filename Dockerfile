@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+ENV RCLONE_CONFIG=/home/oneindex/rclone.conf
+
 RUN apk add --no-cache bash curl php7 php7-curl php7-fpm php7-cli php7-json unzip
 
 RUN mkdir -p /home/oneindex
