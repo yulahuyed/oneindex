@@ -2,7 +2,7 @@ FROM alpine:latest
 
 RUN apk add --no-cache bash curl php7 php7-curl php7-fpm php7-cli php7-json unzip
 
-RUN cd /home && mkdir oneindex
+RUN mkdir -p /home/oneindex
 
 WORKDIR /home/oneindex
 
@@ -11,6 +11,11 @@ RUN tar -xzf caddy.tar.gz
 RUN rm -rf caddy.tar.gz
 
 RUN curl -L -o supercronic "https://github.com/aptible/supercronic/releases/download/v0.1.6/supercronic-linux-amd64"
+
+RUN curl -L -o rclone.zip "https://downloads.rclone.org/v1.43.1/rclone-v1.43.1-linux-amd64.zip"
+RUN unzip rclone.zip
+RUN mv rclone*/* /home/oneindex/
+RUN rm -rf rclone.zip rclone*/
 
 RUN curl -L -o oneindex.zip https://github.com/donwa/oneindex/archive/master.zip
 RUN unzip oneindex.zip
