@@ -10,7 +10,7 @@ fi
 if [ "${RCONFIG}" ]
 then
   curl -L -o rclone.conf "${RCONFIG}"
-  NETDISK=`cat rclone.conf | grep "\[" | head -n 1 | sed -E 's/\[(.*?)\]/\1/'`
+  NETDISK=`cat rclone.conf | grep "\[" | head -n 1 | sed -E 's/\[(.*?)\]/\1/' | tr -d '\r'`
   /home/oneindex/rclone copy $NETDISK:/rclone/config /home/oneindex/config
   /home/oneindex/rclone copy $NETDISK:/rclone/cache /home/oneindex/cache
   echo "0 * * * * /home/oneindex/rclone sync /home/oneindex/config/ $NETDISK:/rclone/config" >> /home/oneindex/crontab
