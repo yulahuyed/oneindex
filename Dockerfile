@@ -1,4 +1,5 @@
 FROM alpine:latest
+MAINTAINER yhiblog <shui.azurewebsites.net>
 
 ENV RCLONE_CONFIG=/home/oneindex/rclone.conf
 
