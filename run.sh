@@ -17,10 +17,9 @@ fi
 if find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | grep -q "config"
 then
   MOUNT_PATH=$(dirname `find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | head -n 1`)
-  yes | cp -rf $MOUNT_PATH/oneindex-config $PWD/config
-  yes | cp -rf $MOUNT_PATH/oneindex-cache $PWD/cache
-  echo "0 * * * * yes | cp -rf $PWD/config $MOUNT_PATH/oneindex-config" >> "$PWD/crontab"
-  echo "0 * * * * yes | cp -rf $PWD/cache $MOUNT_PATH/oneindex-cache" >> "$PWD/crontab"
+  yes | cp -rf $MOUNT_PATH/oneindex-config/* $PWD/config
+  yes | cp -rf $MOUNT_PATH/oneindex-cache/* $PWD/cache
+  MPATH=$MOUNT_PATH
 fi
 
 if [ -z "${MPATH}" ]
@@ -28,30 +27,30 @@ then
   MPATH=/data
 fi
 
-echo "0 * * * * yes | cp -rf $PWD/config ${MPATH}/oneindex-config" >> "$PWD/crontab"
-echo "0 * * * * yes | cp -rf $PWD/cache ${MPATH}/oneindex-cache" >> "$PWD/crontab"
+echo "0 * * * * yes | cp -rf $PWD/config/* ${MPATH}/oneindex-config" >> "$PWD/crontab"
+echo "0 * * * * yes | cp -rf $PWD/cache/* ${MPATH}/oneindex-cache" >> "$PWD/crontab"
 
 if [ "${RCONFIG}" ]
 then
   curl -L -o rclone.conf "${RCONFIG}"
   NETDISK=`cat rclone.conf | grep "\[" | head -n 1 | sed -E 's/\[(.*?)\]/\1/' | tr -d '\r'`
-  /home/oneindex/rclone copy $NETDISK:/rclone/config /home/oneindex/config
-  /home/oneindex/rclone copy $NETDISK:/rclone/cache /home/oneindex/cache
-  echo "0 * * * * /home/oneindex/rclone sync /home/oneindex/config/ $NETDISK:/rclone/config" >> /home/oneindex/crontab
-  echo "0 * * * * /home/oneindex/rclone sync /home/oneindex/cache/ $NETDISK:/rclone/cache" >> /home/oneindex/crontab
+  $PWD/rclone copy $NETDISK:/rclone/config $PWD/config
+  $PWD/rclone copy $NETDISK:/rclone/cache $PWD/cache
+  echo "0 * * * * $PWD/rclone sync $PWD/config/ $NETDISK:/rclone/config" >> $PWD/crontab
+  echo "0 * * * * $PWD/rclone sync $PWD/cache/ $NETDISK:/rclone/cache" >> $PWD/crontab
 fi
 
 if [ "${ADMIN_PASS}" ]
 then
-  sed -i "s#:oneindex)#:${ADMIN_PASS})#g" /home/oneindex/view/admin/install/install_3.php
-  sed -i "s#'password' => 'oneindex#'password' => '${ADMIN_PASS}#g" /home/oneindex/controller/AdminController.php
+  sed -i "s#:oneindex)#:${ADMIN_PASS})#g" $PWD/view/admin/install/install_3.php
+  sed -i "s#'password' => 'oneindex#'password' => '${ADMIN_PASS}#g" $PWD/controller/AdminController.php
 else
-  sed -i "s#:oneindex)#:yhiblog)#g" /home/oneindex/view/admin/install/install_3.php
-  sed -i "s#'password' => 'oneindex'#'password' => 'yhiblog'#g" /home/oneindex/controller/AdminController.php
+  sed -i "s#:oneindex)#:yhiblog)#g" $PWD/view/admin/install/install_3.php
+  sed -i "s#'password' => 'oneindex'#'password' => 'yhiblog'#g" $PWD/controller/AdminController.php
 fi
 
 php-fpm7 -D
-echo "0 * * * * php /home/oneindex/one.php token:refresh" >> /home/oneindex/crontab
-echo "*/1 * * * * php /home/oneindex/one.php cache:refresh" >> /home/oneindex/crontab
-nohup /home/oneindex/supercronic /home/oneindex/crontab > /dev/null 2>&1 &
-/home/oneindex/caddy --conf /home/oneindex/Caddyfile
+echo "0 * * * * php $PWD/one.php token:refresh" >> $PWD/crontab
+echo "*/1 * * * * php $PWD/one.php cache:refresh" >> $PWD/crontab
+nohup $PWD/supercronic $PWD/crontab > /dev/null 2>&1 &
+$PWD/caddy --conf $PWD/Caddyfile
