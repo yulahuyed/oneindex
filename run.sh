@@ -2,9 +2,14 @@
 
 if [ "${DOMAIN}" ]
 then
-  sed -i "s#https://ju.tn/#${DOMAIN}#g" /home/oneindex/view/admin/install/install_1.php
+  DOMAIN=`echo ${DOMAIN} | sed 's#http://##g' | sed 's#https://##g' | sed 's#/##g' | tr -d '\r'`
+  if curl https://${DOMAIN} 2>&1 | grep -qE "curl\: \([0-9]+\)"
+  then
+  echo "Only support HTTPS!"
+  exit 1
+  fi
   sed -i "s#ju.tn#${DOMAIN}#g" /home/oneindex/view/admin/install/install_1.php
-  sed -i "s#https://ju.tn/#${DOMAIN}#g" /home/oneindex/controller/AdminController.php
+  sed -i "s#ju.tn#${DOMAIN}#g" /home/oneindex/controller/AdminController.php
 fi
 
 if [ "${RCONFIG}" ]
