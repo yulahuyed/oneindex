@@ -3,6 +3,8 @@
 if [ "${DOMAIN}" ]
 then
   DOMAIN=`echo ${DOMAIN} | sed 's#http://##g' | sed 's#https://##g' | sed 's#/##g' | tr -d '\r'`
+  
+  # https://stackoverflow.com/questions/39025969/aadsts50011-the-reply-address-is-not-using-a-secure-schemeazure.
   if curl https://${DOMAIN} 2>&1 | grep -qE "curl\: \([0-9]+\)"
   then
   echo "Only support HTTPS!"
