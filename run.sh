@@ -28,7 +28,7 @@ then
 fi
 
 echo "0 * * * * yes | cp -rf $PWD/config/* ${MPATH}/oneindex-config" >> "$PWD/crontab"
-echo "0 * * * * yes | cp -rf $PWD/cache/* ${MPATH}/oneindex-cache" >> "$PWD/crontab"
+echo "*/20 * * * * yes | cp -rf $PWD/cache/* ${MPATH}/oneindex-cache" >> "$PWD/crontab"
 
 if [ "${RCONFIG}" ]
 then
@@ -37,7 +37,7 @@ then
   $PWD/rclone copy $NETDISK:/rclone/config $PWD/config
   $PWD/rclone copy $NETDISK:/rclone/cache $PWD/cache
   echo "0 * * * * $PWD/rclone sync $PWD/config/ $NETDISK:/rclone/config" >> $PWD/crontab
-  echo "0 * * * * $PWD/rclone sync $PWD/cache/ $NETDISK:/rclone/cache" >> $PWD/crontab
+  echo "*/20 * * * * $PWD/rclone sync $PWD/cache/ $NETDISK:/rclone/cache" >> $PWD/crontab
 fi
 
 if [ "${ADMIN_PASS}" ]
