@@ -28,6 +28,8 @@ COPY ./Caddyfile /home/oneindex/Caddyfile
 COPY ./run.sh /home/oneindex/run.sh
 
 RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
+
+# https://github.com/Azure-Samples/active-directory-dotnet-webapp-roleclaims/issues/19
 RUN sed -i 's/self::$client_secret/urlencode(self::$client_secret)/g' /home/oneindex/lib/onedrive.php
 
 RUN chmod -R 777 /home/oneindex
