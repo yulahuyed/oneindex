@@ -10,9 +10,26 @@ then
   echo "Only support HTTPS!"
   exit 1
   fi
-  sed -i "s#ju.tn#${DOMAIN}#g" /home/oneindex/view/admin/install/install_1.php
-  sed -i "s#ju.tn#${DOMAIN}#g" /home/oneindex/controller/AdminController.php
+  sed -i "s#ju.tn#${DOMAIN}#g" "$PWD/view/admin/install/install_1.php"
+  sed -i "s#ju.tn#${DOMAIN}#g" "$PWD/controller/AdminController.php"
 fi
+
+if find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | grep -q "config"
+then
+  MOUNT_PATH=$(dirname `find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | head -n 1`)
+  yes | cp -rf $MOUNT_PATH/oneindex-config $PWD/config
+  yes | cp -rf $MOUNT_PATH/oneindex-cache $PWD/cache
+  echo "0 * * * * yes | cp -rf $PWD/config $MOUNT_PATH/oneindex-config" >> "$PWD/crontab"
+  echo "0 * * * * yes | cp -rf $PWD/cache $MOUNT_PATH/oneindex-cache" >> "$PWD/crontab"
+fi
+
+if [ -z "${MPATH}" ]
+then
+  MPATH=/data
+fi
+
+echo "0 * * * * yes | cp -rf $PWD/config ${MPATH}/oneindex-config" >> "$PWD/crontab"
+echo "0 * * * * yes | cp -rf $PWD/cache ${MPATH}/oneindex-cache" >> "$PWD/crontab"
 
 if [ "${RCONFIG}" ]
 then
