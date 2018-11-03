@@ -1,5 +1,13 @@
 #!/bin/bash
 
+
+curl -L -o oneindex.zip https://github.com/donwa/oneindex/archive/master.zip
+unzip oneindex.zip
+mv oneindex-master/* /home/oneindex
+rm -rf oneindex.zip oneindex-master
+# https://github.com/Azure-Samples/active-directory-dotnet-webapp-roleclaims/issues/19
+sed -i 's/self::$client_secret/urlencode(self::$client_secret)/g' /home/oneindex/lib/onedrive.php
+
 if [ "${DOMAIN}" ]
 then
   DOMAIN=`echo ${DOMAIN} | sed 's#http://##g' | sed 's#https://##g' | sed 's#/##g' | tr -d '\r'`
