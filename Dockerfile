@@ -29,8 +29,8 @@ RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
 RUN chmod -R 777 /home
 RUN chmod -R 777 /etc/php7
 RUN chmod -R 777 /var/log
-RUN mkdir /data && chmod -R 777 /data
-
+RUN mkdir /home/oneindex && chmod -R 777 /home/oneindex
+WORKDIR /home/oneindex
 EXPOSE 8080
 
 CMD ["/home/run.sh"]
