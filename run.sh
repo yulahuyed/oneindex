@@ -22,25 +22,10 @@ then
   sed -i "s#ju.tn#${DOMAIN}#g" "$PWD/controller/AdminController.php"
 fi
 
-if find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | grep -q "config"
+if [ "${RCONFIG}" ] && [ ! -f "$PWD/config/rclone.conf" ]
 then
-  MOUNT_PATH=$(dirname `find / -type d -name "oneindex-config" 2>&1 | grep -v "denied" | head -n 1`)
-  yes | cp -rf $MOUNT_PATH/oneindex-config/* $PWD/config
-  yes | cp -rf $MOUNT_PATH/oneindex-cache/* $PWD/cache
-  MPATH=$MOUNT_PATH
-fi
-
-if [ -z "${MPATH}" ]
-then
-  MPATH=/data
-fi
-
-echo "0 * * * * yes | cp -rf $PWD/config/* ${MPATH}/oneindex-config" >> "$PWD/crontab"
-echo "*/20 * * * * yes | cp -rf $PWD/cache/* ${MPATH}/oneindex-cache" >> "$PWD/crontab"
-
-if [ "${RCONFIG}" ]
-then
-  curl -L -o rclone.conf "${RCONFIG}"
+  mkdir -p $PWD/config
+  curl -L -o "$PWD/config/rclone.conf" "${RCONFIG}"
   NETDISK=`cat rclone.conf | grep "\[" | head -n 1 | sed -E 's/\[(.*?)\]/\1/' | tr -d '\r'`
   $PWD/rclone copy $NETDISK:/rclone/config $PWD/config
   $PWD/rclone copy $NETDISK:/rclone/cache $PWD/cache
