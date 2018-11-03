@@ -3,11 +3,11 @@
 
 curl -L -o oneindex.zip https://github.com/donwa/oneindex/archive/master.zip
 unzip oneindex.zip
-mv oneindex-master/* /home/oneindex
+mv -f oneindex-master/* /home/oneindex
 rm -rf oneindex.zip oneindex-master
 # https://github.com/Azure-Samples/active-directory-dotnet-webapp-roleclaims/issues/19
 sed -i 's/self::$client_secret/urlencode(self::$client_secret)/g' /home/oneindex/lib/onedrive.php
-cd /home/oneindex
+
 if [ "${DOMAIN}" ]
 then
   DOMAIN=`echo ${DOMAIN} | sed 's#http://##g' | sed 's#https://##g' | sed 's#/##g' | tr -d '\r'`
@@ -21,6 +21,9 @@ then
   sed -i "s#ju.tn#${DOMAIN}#g" "$PWD/view/admin/install/install_1.php"
   sed -i "s#ju.tn#${DOMAIN}#g" "$PWD/controller/AdminController.php"
 fi
+
+echo "0 * * * * php $PWD/one.php token:refresh" > /home/crontab
+echo "*/1 * * * * php $PWD/one.php cache:refresh" >> /home/crontab
 
 if [ "${RCONFIG}" ] && [ ! -f "$PWD/config/rclone.conf" ]
 then
@@ -43,7 +46,6 @@ else
 fi
 
 php-fpm7 -D
-echo "0 * * * * php $PWD/one.php token:refresh" >> /home/crontab
-echo "*/1 * * * * php $PWD/one.php cache:refresh" >> /home/crontab
+
 nohup /home/supercronic /home/crontab > /dev/null 2>&1 &
 /home/caddy --conf /home/Caddyfile
