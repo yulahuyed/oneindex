@@ -20,20 +20,14 @@ RUN unzip rclone.zip
 RUN mv rclone*/* /home/oneindex/
 RUN rm -rf rclone.zip rclone*/
 
-RUN curl -L -o oneindex.zip https://github.com/donwa/oneindex/archive/master.zip
-RUN unzip oneindex.zip
-RUN mv oneindex-master/* /home/oneindex/
-RUN rm -rf oneindex.zip oneindex-master
 
 COPY ./Caddyfile /home/oneindex/Caddyfile
 COPY ./run.sh /home/oneindex/run.sh
 
 RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
 
-# https://github.com/Azure-Samples/active-directory-dotnet-webapp-roleclaims/issues/19
-RUN sed -i 's/self::$client_secret/urlencode(self::$client_secret)/g' /home/oneindex/lib/onedrive.php
 
-RUN chmod -R 777 /home/oneindex
+RUN chmod -R 777 /home
 RUN chmod -R 777 /etc/php7
 RUN chmod -R 777 /var/log
 RUN mkdir /data && chmod -R 777 /data
