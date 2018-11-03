@@ -1,7 +1,7 @@
 FROM alpine:latest
 MAINTAINER yhiblog <shui.azurewebsites.net>
 
-ENV RCLONE_CONFIG=/home/oneindex/rclone.conf
+ENV RCLONE_CONFIG=/home/oneindex/config/rclone.conf
 
 RUN apk add --no-cache bash curl php7 php7-curl php7-fpm php7-cli php7-json unzip
 
