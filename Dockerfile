@@ -26,11 +26,16 @@ COPY ./run.sh /home/run.sh
 RUN sed -i "s/127.0.0.1:9000/9000/g" /etc/php7/php-fpm.d/www.conf
 
 
+
+RUN mkdir /home/oneindex && chmod -R 777 /home/oneindex
+WORKDIR /home/oneindex
+RUN curl -L -o oneindex.zip https://github.com/donwa/oneindex/archive/master.zip
+RUN unzip oneindex.zip
+RUN sed -i 's/= self::$client_secret/= urlencode(self::$client_secret)/g' /home/oneindex/oneindex-*/lib/onedrive.php
+RUN rm -rf oneindex.zip
 RUN chmod -R 777 /home
 RUN chmod -R 777 /etc/php7
 RUN chmod -R 777 /var/log
-RUN mkdir /home/oneindex && chmod -R 777 /home/oneindex
-WORKDIR /home/oneindex
 EXPOSE 8080
 
 CMD ["/home/run.sh"]
