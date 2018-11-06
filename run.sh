@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-mv -f oneindex-master/* /home/oneindex
-rm -rf oneindex-master
+mv -f /home/oneindex-master/* /home/oneindex
+rm -rf /home/oneindex-master
 # https://github.com/Azure-Samples/active-directory-dotnet-webapp-roleclaims/issues/19
 
 if [ "${DOMAIN}" ]
